@@ -1,0 +1,39 @@
+<section class="hero">
+  <h1>Créez un CV professionnel en quelques minutes</h1>
+  <p>
+    Choisissez parmi nos modèles élégants, remplissez le formulaire étape par étape et prévisualisez votre CV en
+    temps réel. Exportez en PDF ou imprimez directement.
+  </p>
+</section>
+
+<section class="grid">
+  @for (t of templates; track t.id) {
+    <mat-card class="template-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>description</mat-icon>
+          {{ t.name }}
+        </mat-card-title>
+        <mat-card-subtitle>{{ t.description }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="thumb" aria-hidden="true">
+          <div class="thumb-bar"></div>
+          <div class="thumb-lines">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <a mat-flat-button color="primary" [routerLink]="['/builder', t.id]">
+          <mat-icon>arrow_forward</mat-icon>
+          Utiliser ce modèle
+        </a>
+      </mat-card-actions>
+    </mat-card>
+  }
+</section>
+

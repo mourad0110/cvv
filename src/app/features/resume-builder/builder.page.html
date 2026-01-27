@@ -1,0 +1,378 @@
+<section class="builder-grid">
+  <div class="wizard no-print">
+    <mat-card class="wizard-card">
+      <mat-card-header>
+        <mat-card-title>Informations</mat-card-title>
+        <mat-card-subtitle>Remplissez les étapes. L’aperçu se met à jour en temps réel.</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-divider></mat-divider>
+
+      <div class="wizard-body" [formGroup]="form">
+        <mat-stepper [linear]="true">
+          <mat-step [stepControl]="form.controls.personal" label="Profil">
+            <div class="step" [formGroup]="form.controls.personal">
+              <input
+                #photoInput
+                type="file"
+                accept="image/*"
+                class="photo-input"
+                (change)="onPhotoSelected($event)"
+              />
+
+              <div class="photo-row">
+                <div class="photo-preview">
+                  @if (form.controls.personal.controls.photoDataUrl.value) {
+                    <img [src]="form.controls.personal.controls.photoDataUrl.value!" alt="Photo de profil" />
+                  } @else {
+                    <span>Photo</span>
+                  }
+                </div>
+
+                <div class="photo-actions">
+                  <button mat-stroked-button type="button" (click)="photoInput.click()">
+                    <mat-icon>photo_camera</mat-icon>
+                    Ajouter / changer
+                  </button>
+                  <button
+                    mat-button
+                    color="warn"
+                    type="button"
+                    [disabled]="!form.controls.personal.controls.photoDataUrl.value"
+                    (click)="removePhoto()"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+
+              <div class="two-cols">
+                <mat-form-field appearance="outline">
+                  <mat-label>Prénom</mat-label>
+                  <input matInput formControlName="firstName" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Nom</mat-label>
+                  <input matInput formControlName="lastName" />
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Titre / Poste</mat-label>
+                <input matInput formControlName="headline" />
+              </mat-form-field>
+
+              <div class="two-cols">
+                <mat-form-field appearance="outline">
+                  <mat-label>Email</mat-label>
+                  <input matInput formControlName="email" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Téléphone</mat-label>
+                  <input matInput formControlName="phone" />
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Localisation</mat-label>
+                <input matInput formControlName="location" placeholder="Ville, pays" />
+              </mat-form-field>
+
+              <div class="two-cols">
+                <mat-form-field appearance="outline">
+                  <mat-label>Site web</mat-label>
+                  <input matInput formControlName="website" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>LinkedIn</mat-label>
+                  <input matInput formControlName="linkedIn" />
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline">
+                <mat-label>GitHub</mat-label>
+                <input matInput formControlName="github" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Résumé</mat-label>
+                <textarea matInput rows="4" formControlName="summary"></textarea>
+              </mat-form-field>
+
+              <div class="step-actions">
+                <a mat-button routerLink="/">Changer de modèle</a>
+                <span class="spacer"></span>
+                <button
+                  mat-flat-button
+                  color="primary"
+                  matStepperNext
+                  [disabled]="form.controls.personal.invalid"
+                >
+                  Suivant
+                </button>
+              </div>
+            </div>
+          </mat-step>
+
+          <mat-step [stepControl]="form.controls.educationStep" label="Formation">
+            <div class="step" [formGroup]="form.controls.educationStep">
+              <div formArrayName="items" class="items">
+                @for (g of educationArray.controls; track $index; let i = $index) {
+                  <mat-card class="item-card" [formGroupName]="i">
+                    <div class="item-header">
+                      <strong>Formation {{ i + 1 }}</strong>
+                      <button mat-icon-button type="button" (click)="removeEducation(i)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Établissement</mat-label>
+                      <input matInput formControlName="school" />
+                    </mat-form-field>
+
+                    <div class="two-cols">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Diplôme</mat-label>
+                        <input matInput formControlName="degree" />
+                      </mat-form-field>
+
+                      <mat-form-field appearance="outline">
+                        <mat-label>Domaine</mat-label>
+                        <input matInput formControlName="field" />
+                      </mat-form-field>
+                    </div>
+
+                    <div class="two-cols">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Date début</mat-label>
+                        <input matInput formControlName="startDate" placeholder="2022" />
+                      </mat-form-field>
+
+                      <mat-form-field appearance="outline">
+                        <mat-label>Date fin</mat-label>
+                        <input matInput formControlName="endDate" placeholder="2025 / Présent" />
+                      </mat-form-field>
+                    </div>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Description</mat-label>
+                      <textarea matInput rows="3" formControlName="description"></textarea>
+                    </mat-form-field>
+                  </mat-card>
+                }
+              </div>
+
+              <button mat-stroked-button type="button" (click)="addEducation()">Ajouter une formation</button>
+
+              <div class="step-actions">
+                <button mat-button matStepperPrevious>Retour</button>
+                <span class="spacer"></span>
+                <button mat-flat-button color="primary" matStepperNext>Suivant</button>
+              </div>
+            </div>
+          </mat-step>
+
+          <mat-step [stepControl]="form.controls.experienceStep" label="Expérience">
+            <div class="step" [formGroup]="form.controls.experienceStep">
+              <div formArrayName="items" class="items">
+                @for (g of experienceArray.controls; track $index; let i = $index) {
+                  <mat-card class="item-card" [formGroupName]="i">
+                    <div class="item-header">
+                      <strong>Expérience {{ i + 1 }}</strong>
+                      <button mat-icon-button type="button" (click)="removeExperience(i)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Entreprise</mat-label>
+                      <input matInput formControlName="company" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Poste</mat-label>
+                      <input matInput formControlName="role" />
+                    </mat-form-field>
+
+                    <div class="two-cols">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Date début</mat-label>
+                        <input matInput formControlName="startDate" />
+                      </mat-form-field>
+
+                      <mat-form-field appearance="outline">
+                        <mat-label>Date fin</mat-label>
+                        <input matInput formControlName="endDate" />
+                      </mat-form-field>
+                    </div>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Missions / Réalisations</mat-label>
+                      <textarea matInput rows="3" formControlName="description"></textarea>
+                    </mat-form-field>
+                  </mat-card>
+                }
+              </div>
+
+              <button mat-stroked-button type="button" (click)="addExperience()">
+                Ajouter une expérience
+              </button>
+
+              <div class="step-actions">
+                <button mat-button matStepperPrevious>Retour</button>
+                <span class="spacer"></span>
+                <button mat-flat-button color="primary" matStepperNext>Suivant</button>
+              </div>
+            </div>
+          </mat-step>
+
+          <mat-step [stepControl]="form.controls.skillsStep" label="Compétences">
+            <div class="step" [formGroup]="form.controls.skillsStep">
+              <div formArrayName="items" class="items">
+                @for (g of skillsArray.controls; track $index; let i = $index) {
+                  <mat-card class="item-card" [formGroupName]="i">
+                    <div class="item-header">
+                      <strong>Compétence {{ i + 1 }}</strong>
+                      <button mat-icon-button type="button" (click)="removeSkill(i)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+
+                    <div class="two-cols">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Nom</mat-label>
+                        <input matInput formControlName="name" />
+                      </mat-form-field>
+
+                      <mat-form-field appearance="outline">
+                        <mat-label>Niveau</mat-label>
+                        <mat-select formControlName="level">
+                          <mat-option value="Débutant">Débutant</mat-option>
+                          <mat-option value="Intermédiaire">Intermédiaire</mat-option>
+                          <mat-option value="Avancé">Avancé</mat-option>
+                          <mat-option value="Expert">Expert</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </mat-card>
+                }
+              </div>
+
+              <button mat-stroked-button type="button" (click)="addSkill()">Ajouter une compétence</button>
+
+              <div class="step-actions">
+                <button mat-button matStepperPrevious>Retour</button>
+                <span class="spacer"></span>
+                <button mat-flat-button color="primary" matStepperNext>Suivant</button>
+              </div>
+            </div>
+          </mat-step>
+
+          <mat-step [stepControl]="form.controls.languagesStep" label="Langues">
+            <div class="step" [formGroup]="form.controls.languagesStep">
+              <div formArrayName="items" class="items">
+                @for (g of languagesArray.controls; track $index; let i = $index) {
+                  <mat-card class="item-card" [formGroupName]="i">
+                    <div class="item-header">
+                      <strong>Langue {{ i + 1 }}</strong>
+                      <button mat-icon-button type="button" (click)="removeLanguage(i)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+
+                    <div class="two-cols">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Langue</mat-label>
+                        <input matInput formControlName="name" />
+                      </mat-form-field>
+
+                      <mat-form-field appearance="outline">
+                        <mat-label>Niveau</mat-label>
+                        <mat-select formControlName="level">
+                          <mat-option value="A1">A1</mat-option>
+                          <mat-option value="A2">A2</mat-option>
+                          <mat-option value="B1">B1</mat-option>
+                          <mat-option value="B2">B2</mat-option>
+                          <mat-option value="C1">C1</mat-option>
+                          <mat-option value="C2">C2</mat-option>
+                          <mat-option value="Natif">Natif</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </mat-card>
+                }
+              </div>
+
+              <button mat-stroked-button type="button" (click)="addLanguage()">Ajouter une langue</button>
+
+              <div class="step-actions">
+                <button mat-button matStepperPrevious>Retour</button>
+                <span class="spacer"></span>
+                <button mat-flat-button color="primary" matStepperNext>Suivant</button>
+              </div>
+            </div>
+          </mat-step>
+
+          <mat-step [stepControl]="form.controls.interestsStep" label="Centres d’intérêt (optionnel)">
+            <div class="step" [formGroup]="form.controls.interestsStep">
+              <div formArrayName="items" class="items">
+                @for (c of interestsArray.controls; track $index; let i = $index) {
+                  <mat-card class="item-card">
+                    <div class="item-header">
+                      <strong>Centre d’intérêt {{ i + 1 }}</strong>
+                      <button mat-icon-button type="button" (click)="removeInterest(i)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Intérêt</mat-label>
+                      <input matInput [formControlName]="i" />
+                    </mat-form-field>
+                  </mat-card>
+                }
+              </div>
+
+              <button mat-stroked-button type="button" (click)="addInterest()">Ajouter un centre d’intérêt</button>
+
+              <div class="step-actions">
+                <button mat-button matStepperPrevious>Retour</button>
+                <span class="spacer"></span>
+                <button mat-flat-button color="primary" (click)="saveNow()">Terminer</button>
+              </div>
+            </div>
+          </mat-step>
+        </mat-stepper>
+      </div>
+    </mat-card>
+  </div>
+
+  <div class="preview">
+    <div class="preview-actions no-print">
+      <button mat-stroked-button type="button" (click)="saveNow()">Sauvegarder</button>
+      <button mat-flat-button color="primary" type="button" (click)="downloadPdf()">
+        Télécharger PDF
+      </button>
+      <button mat-stroked-button type="button" (click)="print()">Imprimer</button>
+      <span class="spacer"></span>
+      <button mat-button color="warn" type="button" (click)="resetAll()">Réinitialiser</button>
+    </div>
+
+    <div class="page" #resumePreview>
+      @if (store.resume$ | async; as resume) {
+        @switch (resume.templateId) {
+          @case ('atlas') {
+            <app-template-atlas [resume]="resume" />
+          }
+          @case ('nova') {
+            <app-template-nova [resume]="resume" />
+          }
+        }
+      }
+    </div>
+  </div>
+</section>
+

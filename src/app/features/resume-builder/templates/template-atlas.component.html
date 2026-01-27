@@ -1,0 +1,173 @@
+<div class="atlas">
+  <header class="header">
+    <div class="avatar">
+      @if (resume.personal.photoDataUrl) {
+        <img [src]="resume.personal.photoDataUrl" alt="Photo de profil" />
+      } @else {
+        <span aria-hidden="true">
+          {{ (resume.personal.firstName || 'P').slice(0, 1) }}{{ (resume.personal.lastName || 'N').slice(0, 1) }}
+        </span>
+      }
+    </div>
+
+    <div class="name">
+      <div class="full">
+        {{ resume.personal.firstName || 'Prénom' }}
+        <span>{{ resume.personal.lastName || 'Nom' }}</span>
+      </div>
+      @if (resume.personal.headline) {
+        <div class="headline">{{ resume.personal.headline }}</div>
+      }
+    </div>
+
+    <div class="contact">
+      @if (resume.personal.email) {
+        <div>
+          <i class="bi bi-envelope-fill"></i>
+          <span>{{ resume.personal.email }}</span>
+        </div>
+      }
+      @if (resume.personal.phone) {
+        <div>
+          <i class="bi bi-telephone-fill"></i>
+          <span>{{ resume.personal.phone }}</span>
+        </div>
+      }
+      @if (resume.personal.location) {
+        <div>
+          <i class="bi bi-geo-alt-fill"></i>
+          <span>{{ resume.personal.location }}</span>
+        </div>
+      }
+      @if (resume.personal.website) {
+        <div>
+          <i class="bi bi-globe"></i>
+          <span>{{ resume.personal.website }}</span>
+        </div>
+      }
+      @if (resume.personal.linkedIn) {
+        <div>
+          <i class="bi bi-linkedin"></i>
+          <span>{{ resume.personal.linkedIn }}</span>
+        </div>
+      }
+      @if (resume.personal.github) {
+        <div>
+          <i class="bi bi-github"></i>
+          <span>{{ resume.personal.github }}</span>
+        </div>
+      }
+    </div>
+  </header>
+
+  <div class="content">
+    <aside class="side">
+      @if (resume.skills.length) {
+        <section class="block">
+          <h3>Compétences</h3>
+          <ul>
+            @for (s of resume.skills; track $index) {
+              <li>
+                <span class="label">{{ s.name }}</span>
+                @if (s.level) {
+                  <span class="meta">{{ s.level }}</span>
+                }
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      @if (resume.languages.length) {
+        <section class="block">
+          <h3>Langues</h3>
+          <ul>
+            @for (l of resume.languages; track $index) {
+              <li>
+                <span class="label">{{ l.name }}</span>
+                @if (l.level) {
+                  <span class="meta">{{ l.level }}</span>
+                }
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      @if (resume.interests.length) {
+        <section class="block">
+          <h3>Centres d’intérêt</h3>
+          <ul>
+            @for (i of resume.interests; track $index) {
+              <li>{{ i }}</li>
+            }
+          </ul>
+        </section>
+      }
+    </aside>
+
+    <main class="main">
+      @if (resume.personal.summary) {
+        <section class="block">
+          <h3>Profil</h3>
+          <p>{{ resume.personal.summary }}</p>
+        </section>
+      }
+
+      @if (resume.experience.length) {
+        <section class="block">
+          <h3>Expérience</h3>
+          @for (e of resume.experience; track $index) {
+            <article class="entry">
+              <div class="entry-top">
+                <div class="entry-title">
+                  <strong>{{ e.role || 'Poste' }}</strong>
+                  <span class="muted">— {{ e.company || 'Entreprise' }}</span>
+                </div>
+                <div class="entry-dates">
+                  {{ e.startDate || '' }} @if (e.endDate) { <span> · {{ e.endDate }}</span> }
+                </div>
+              </div>
+              @if (e.location) {
+                <div class="muted">
+                  <i class="bi bi-geo-alt-fill"></i>
+                  <span>{{ e.location }}</span>
+                </div>
+              }
+              @if (e.description) {
+                <p class="desc">{{ e.description }}</p>
+              }
+            </article>
+          }
+        </section>
+      }
+
+      @if (resume.education.length) {
+        <section class="block">
+          <h3>Formation</h3>
+          @for (ed of resume.education; track $index) {
+            <article class="entry">
+              <div class="entry-top">
+                <div class="entry-title">
+                  <strong>{{ ed.school || 'Établissement' }}</strong>
+                  @if (ed.degree || ed.field) {
+                    <span class="muted">
+                      — {{ ed.degree || '' }} @if (ed.field) { <span>({{ ed.field }})</span> }
+                    </span>
+                  }
+                </div>
+                <div class="entry-dates">
+                  {{ ed.startDate || '' }} @if (ed.endDate) { <span> · {{ ed.endDate }}</span> }
+                </div>
+              </div>
+              @if (ed.description) {
+                <p class="desc">{{ ed.description }}</p>
+              }
+            </article>
+          }
+        </section>
+      }
+    </main>
+  </div>
+</div>
+
