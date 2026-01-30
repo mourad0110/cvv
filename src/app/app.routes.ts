@@ -10,5 +10,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/resume-builder/builder.page').then((m) => m.BuilderPage)
   },
+  {
+    path: 'my-cvs',
+    loadComponent: () => import('./features/cv-list/cv-list.page').then((m) => m.CvListPage)
+  },
   { path: '**', redirectTo: '' }
 ];

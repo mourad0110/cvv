@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Resume API</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Resume API Tester</h1>
+    
+    <button onclick="testGetAll()">1. Get All Resumes</button>
+    <button onclick="testCreate()">2. Create Resume</button>
+    <button onclick="testGetById()">3. Get Resume by ID (1)</button>
+    
+    <h2>Response:</h2>
+    <pre id="response">Click a button to test...</pre>
+    
+    <script>
+        const API_URL = 'http://localhost:8080/api/resumes';
+        let createdId = null;
+        
+        async function testGetAll() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                document.getElementById('response').textContent = 
+                    'GET All Resumes:\n' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('response').textContent = 
+                    'Error: ' + error.message;
+            }
+        }
+        
+        async function testCreate() {
+            const resumeData = {
+                templateId: "atlas",
+                personal: {
+                    firstName: "John",
+                    lastName: "Doe",
+                    email: "john.doe@example.com",
+                    phone: "+1 (555) 123-4567",
+                    location: "New York, USA",
+                    headline: "Software Engineer",
+                    summary: "Experienced developer"
+                },
+                education: [
+                    {
+                        school: "University of Technology",
+                        degree: "Bachelor of Science",
+                        field: "Computer Science",
+                        startDate: "2020",
+                        endDate: "2024"
+                    }
+                ],
+                experience: [
+                    {
+                        company: "Tech Solutions Inc.",
+                        role: "Senior Software Engineer",
+                        startDate: "2024",
+                        endDate: "Present",
+                        description: "Leading development team"
+                    }
+                ],
+                skills: [
+                    { name: "Java", level: "Expert" },
+                    { name: "Spring Boot", level: "Avancé" }
+                ],
+                languages: [
+                    { name: "English", level: "Natif" },
+                    { name: "French", level: "B2" }
+                ],
+                interests: ["Reading", "Coding", "Traveling"]
+            };
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(resumeData)
+                });
+                
+                const data = await response.json();
+                createdId = data.id;
+                document.getElementById('response').textContent = 
+                    'POST Create Resume:\n' + JSON.stringify(data, null, 2) + 
+                    '\n\n✅ Resume created with ID: ' + data.id +
+                    '\n\nNow check phpMyAdmin - cvbuilder database - resumes table!';
+            } catch (error) {
+                document.getElementById('response').textContent = 
+                    'Error: ' + error.message;
+            }
+        }
+        
+        async function testGetById() {
+            if (!createdId) {
+                document.getElementById('response').textContent = 
+                    'Please create a resume first (button 2)';
+                return;
+            }
+            
+            try {
+                const response = await fetch(API_URL + '/' + createdId);
+                const data = await response.json();
+                document.getElementById('response').textContent = 
+                    'GET Resume by ID:\n' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('response').textContent = 
+                    'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
+

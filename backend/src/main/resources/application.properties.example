@@ -1,0 +1,66 @@
+# Server Configuration
+server.port=8080
+spring.application.name=cv-builder-backend
+
+# ============================================
+# DATABASE CONFIGURATION
+# ============================================
+
+# Option 1: H2 Database (Development - In-Memory)
+# Uncomment these lines for H2:
+#spring.datasource.url=jdbc:h2:mem:cvbuilder
+#spring.datasource.driverClassName=org.h2.Driver
+#spring.datasource.username=sa
+#spring.datasource.password=
+#spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+#spring.h2.console.enabled=true
+#spring.h2.console.path=/h2-console
+
+# Option 2: H2 Database (Development - File-based, persists data)
+# Uncomment these lines for file-based H2:
+#spring.datasource.url=jdbc:h2:file:./data/cvbuilder
+#spring.datasource.driverClassName=org.h2.Driver
+#spring.datasource.username=sa
+#spring.datasource.password=
+#spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+#spring.h2.console.enabled=true
+#spring.h2.console.path=/h2-console
+
+# Option 3: PostgreSQL (Production)
+# Uncomment these lines for PostgreSQL:
+#spring.datasource.url=jdbc:postgresql://localhost:5432/cvbuilder
+#spring.datasource.driverClassName=org.postgresql.Driver
+#spring.datasource.username=your_username
+#spring.datasource.password=your_password
+#spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+
+# ============================================
+# JPA/HIBERNATE CONFIGURATION
+# ============================================
+spring.jpa.hibernate.ddl-auto=update
+# Options: none, validate, update, create, create-drop
+# - update: Updates schema if needed (good for development)
+# - validate: Only validates, doesn't make changes (good for production)
+# - create: Creates schema on startup, drops on shutdown
+# - create-drop: Creates on startup, drops on shutdown
+
+spring.jpa.show-sql=true
+# Set to false in production for better performance
+
+spring.jpa.properties.hibernate.format_sql=true
+# Formats SQL output for better readability
+
+# ============================================
+# CORS CONFIGURATION
+# ============================================
+spring.web.cors.allowed-origins=http://localhost:4200
+spring.web.cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS
+spring.web.cors.allowed-headers=*
+spring.web.cors.allow-credentials=true
+
+# ============================================
+# JSON CONFIGURATION
+# ============================================
+spring.jackson.serialization.write-dates-as-timestamps=false
+spring.jackson.time-zone=UTC
+

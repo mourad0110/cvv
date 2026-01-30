@@ -1,12 +1,15 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { EMPTY_RESUME, Resume, ResumeTemplateId } from '../models/resume.model';
 import { TemplateRegistryService } from './template-registry.service';
+import { ResumeApiService } from './resume-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class ResumeStoreService {
   private readonly storageKey = 'cv-builder:resume:v1';
   private readonly resumeSubject = new BehaviorSubject<Resume>(this.createDefault());
+  private readonly apiService = inject(ResumeApiService);
+  private useBackend = true; // Using backend API
 
   readonly resume$ = this.resumeSubject.asObservable();
 
@@ -26,7 +29,17 @@ export class ResumeStoreService {
   setResume(resume: Resume): void {
     const next: Resume = { ...resume, updatedAtIso: new Date().toISOString() };
     this.resumeSubject.next(next);
+    // Auto-save to localStorage for backup
     this.save();
+  }
+
+  saveToBackend(): Observable<Resume> {
+    if (this.useBackend) {
+      return this.apiService.saveResume(this.snapshot);
+    } else {
+      this.save();
+      return new BehaviorSubject(this.snapshot).asObservable();
+    }
   }
 
   reset(templateId: ResumeTemplateId = 'atlas'): void {
@@ -40,6 +53,7 @@ export class ResumeStoreService {
       // ignore storage errors (private mode, quotas, etc.)
     }
   }
+
 
   private tryLoad(): Resume | null {
     try {

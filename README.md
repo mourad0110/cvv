@@ -1,59 +1,122 @@
-# FirstAngular
+# CV Builder
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.0.
+A professional CV/Resume builder application with Angular frontend and Spring Boot backend.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- 🎨 Multiple professional resume templates (Atlas, Nova)
+- ✏️ Real-time preview while editing
+- 💾 Save resumes to database or localStorage
+- 📄 Export to PDF
+- 🖨️ Print directly
+- 🌐 Right-to-left (RTL) text support
+- 🔄 Template switching without page refresh
 
-```bash
-ng serve
+## Project Structure
+
+```
+CV_Builder/
+├── src/                    # Angular frontend
+│   └── app/
+│       ├── features/        # Feature modules
+│       └── core/           # Core services and models
+└── backend/                # Spring Boot backend
+    └── src/main/java/
+        └── com/cvbuilder/
+            ├── entity/      # JPA entities
+            ├── dto/         # Data transfer objects
+            ├── repository/  # Data repositories
+            ├── service/     # Business logic
+            └── controller/  # REST controllers
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Prerequisites
 
-## Code scaffolding
+### Frontend
+- Node.js 20.19+ or 22.12+
+- npm 11.6.2+
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Backend
+- Java 17+
+- Maven 3.6+
 
+## Getting Started
+
+### Frontend Setup
+
+1. Install dependencies:
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+2. Start the development server:
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
+The frontend will be available at `http://localhost:4200`
 
-To build the project run:
+### Backend Setup
 
+1. Navigate to the backend directory:
 ```bash
-ng build
+cd backend
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
+2. Build the project:
 ```bash
-ng test
+mvn clean install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
+3. Run the application:
 ```bash
-ng e2e
+mvn spring-boot:run
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The backend will be available at `http://localhost:8080`
 
-## Additional Resources
+## API Endpoints
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- `POST /api/resumes` - Create a new resume
+- `GET /api/resumes/{id}` - Get a resume by ID
+- `GET /api/resumes` - Get all resumes
+- `PUT /api/resumes/{id}` - Update a resume
+- `DELETE /api/resumes/{id}` - Delete a resume
+
+## Database
+
+By default, the backend uses H2 in-memory database for development.
+
+Access H2 console at: `http://localhost:8080/h2-console`
+- JDBC URL: `jdbc:h2:mem:cvbuilder`
+- Username: `sa`
+- Password: (empty)
+
+For production, configure PostgreSQL in `backend/src/main/resources/application.properties`.
+
+## Configuration
+
+### Enable Backend Integration
+
+To use the backend API instead of localStorage, update `resume-store.service.ts`:
+
+```typescript
+private useBackend = true; // Change to true
+```
+
+## Development
+
+### Frontend
+- Angular 21.1.1
+- Angular Material
+- TypeScript 5.9.2
+
+### Backend
+- Spring Boot 3.2.0
+- Spring Data JPA
+- H2 Database (dev) / PostgreSQL (prod)
+- Lombok
+
+## License
+
+This project is open source and available for personal and commercial use.

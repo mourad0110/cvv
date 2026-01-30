@@ -1,0 +1,100 @@
+### Test API Endpoints
+### Use with REST Client extension in VS Code or IntelliJ
+
+### Variables
+@baseUrl = http://localhost:8080/api/resumes
+
+### 1. Create a new resume
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "templateId": "atlas",
+  "personal": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "headline": "Software Engineer",
+    "email": "john.doe@example.com",
+    "phone": "+1 (555) 123-4567",
+    "location": "New York, USA",
+    "website": "https://johndoe.com",
+    "linkedIn": "linkedin.com/in/johndoe",
+    "github": "github.com/johndoe",
+    "summary": "Experienced software engineer with a passion for building innovative solutions."
+  },
+  "education": [
+    {
+      "school": "University of Technology",
+      "degree": "Bachelor of Science",
+      "field": "Computer Science",
+      "startDate": "2018",
+      "endDate": "2022"
+    }
+  ],
+  "experience": [
+    {
+      "company": "Tech Solutions Inc.",
+      "role": "Senior Software Engineer",
+      "startDate": "2022",
+      "endDate": "Present",
+      "description": "Leading development of cloud-based applications."
+    }
+  ],
+  "skills": [
+    {
+      "name": "JavaScript",
+      "level": "Expert"
+    },
+    {
+      "name": "TypeScript",
+      "level": "Avancé"
+    },
+    {
+      "name": "Angular",
+      "level": "Avancé"
+    }
+  ],
+  "languages": [
+    {
+      "name": "English",
+      "level": "Natif"
+    },
+    {
+      "name": "French",
+      "level": "B2"
+    }
+  ],
+  "interests": ["Reading", "Traveling", "Photography"]
+}
+
+### 2. Get all resumes
+GET {{baseUrl}}
+
+### 3. Get resume by ID (replace 1 with actual ID from step 1)
+GET {{baseUrl}}/1
+
+### 4. Update resume (replace 1 with actual ID)
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "templateId": "nova",
+  "personal": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "headline": "Senior Software Engineer",
+    "email": "jane.doe@example.com",
+    "phone": "+1 (555) 987-6543",
+    "location": "San Francisco, USA"
+  },
+  "education": [],
+  "experience": [],
+  "skills": [],
+  "languages": [],
+  "interests": []
+}
+
+### 5. Delete resume (replace 1 with actual ID)
+DELETE {{baseUrl}}/1
+

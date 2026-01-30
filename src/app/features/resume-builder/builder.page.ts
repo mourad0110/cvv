@@ -6,8 +6,10 @@ import {
   computed,
   effect,
   inject,
-  OnDestroy
+  OnDestroy,
+  signal
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -31,7 +33,7 @@ import {
   SkillItem
 } from '../../core/models/resume.model';
 import { ResumeStoreService } from '../../core/services/resume-store.service';
-import { TemplateRegistryService } from '../../core/services/template-registry.service';
+import { TemplateRegistryService, ResumeTemplateMeta } from '../../core/services/template-registry.service';
 import { TemplateAtlasComponent } from './templates/template-atlas.component';
 import { TemplateNovaComponent } from './templates/template-nova.component';
 
@@ -73,6 +75,13 @@ export class BuilderPage implements OnDestroy {
   private resumePreview?: ElementRef<HTMLElement>;
 
   readonly templateId = computed(() => this.route.snapshot.paramMap.get('templateId'));
+  readonly availableTemplates = this.templates.list();
+  readonly currentTemplate = computed(() => {
+    const id = this.templateId();
+    return id ? this.templates.get(id as ResumeTemplateId) : null;
+  });
+  readonly currentResume = toSignal(this.store.resume$, { initialValue: this.store.snapshot });
+  readonly currentTemplateId = computed(() => this.currentResume()?.templateId ?? 'atlas');
 
   readonly form = this.fb.group({
     personal: this.fb.group({
@@ -106,23 +115,44 @@ export class BuilderPage implements OnDestroy {
   });
 
   constructor() {
+    // Check if we're loading an existing resume from route state
+    const navigation = this.router.getCurrentNavigation();
+    const state = navigation?.extras?.state || history.state;
+    
+    if (state && state.resumeId && state.resume) {
+      // Load existing resume for editing
+      const resume = state.resume as Resume;
+      (resume as any).id = state.resumeId;
+      this.store.setResume(resume);
+      this.hydrateFromResume(resume);
+    }
+
     effect(() => {
       const id = this.templateId();
       if (!this.templates.isValid(id)) {
         this.router.navigateByUrl('/');
         return;
       }
-      this.store.setTemplate(id as ResumeTemplateId);
+      const templateId = id as ResumeTemplateId;
+      // Only update template if it's different from current store template
+      // But don't override if user is switching templates manually or loading existing resume
+      if (this.store.snapshot.templateId !== templateId && !this.isSwitchingTemplate && !state?.resumeId) {
+        this.store.setTemplate(templateId);
+      }
     });
 
-    // init form from saved resume (if any)
-    this.hydrateFromResume(this.store.snapshot);
+    // init form from saved resume (if any) - only if not loading from state
+    if (!state?.resumeId) {
+      this.hydrateFromResume(this.store.snapshot);
+    }
 
     // live preview + autosave
     this.form.valueChanges
       .pipe(debounceTime(80), takeUntil(this.destroy$))
       .subscribe(() => this.store.setResume(this.buildResumeFromForm()));
   }
+
+  private isSwitchingTemplate = false;
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -221,8 +251,17 @@ export class BuilderPage implements OnDestroy {
   }
 
   saveNow(): void {
-    this.store.save();
-    this.snackBar.open('CV sauvegardé.', 'OK', { duration: 1800 });
+    this.store.saveToBackend().subscribe({
+      next: (saved) => {
+        // Update store with saved resume (includes ID from backend)
+        this.store.setResume(saved);
+        this.snackBar.open('CV sauvegardé dans la base de données.', 'OK', { duration: 2000 });
+      },
+      error: (error) => {
+        console.error('Error saving:', error);
+        this.snackBar.open('Erreur lors de la sauvegarde.', 'OK', { duration: 3000 });
+      }
+    });
   }
 
   async downloadPdf(): Promise<void> {
@@ -237,6 +276,38 @@ export class BuilderPage implements OnDestroy {
 
   print(): void {
     window.print();
+  }
+
+  switchTemplate(newTemplateId: ResumeTemplateId): void {
+    const currentStoreTemplate = this.store.snapshot.templateId;
+    if (newTemplateId === currentStoreTemplate) {
+      return; // Already on this template
+    }
+
+    // Set flag to prevent effect from interfering
+    this.isSwitchingTemplate = true;
+
+    // Save current resume data before switching
+    const currentResume = this.buildResumeFromForm();
+    
+    // Update the resume with new template ID
+    const updatedResume: Resume = {
+      ...currentResume,
+      templateId: newTemplateId,
+      updatedAtIso: new Date().toISOString()
+    };
+    
+    // Update store with new template and resume - this will immediately update the preview
+    this.store.setResume(updatedResume);
+    
+    // Update URL without page reload using history API
+    const newUrl = `/builder/${newTemplateId}`;
+    window.history.replaceState({}, '', newUrl);
+    
+    // Reset flag after a short delay
+    setTimeout(() => {
+      this.isSwitchingTemplate = false;
+    }, 100);
   }
 
   private hydrateFromResume(resume: Resume): void {
@@ -274,7 +345,7 @@ export class BuilderPage implements OnDestroy {
 
   private buildResumeFromForm(): Resume {
     const raw = this.form.getRawValue();
-    return {
+    const resume = {
       templateId: this.store.snapshot.templateId,
       personal: {
         firstName: raw.personal?.firstName ?? '',
@@ -297,7 +368,14 @@ export class BuilderPage implements OnDestroy {
         (x): x is string => typeof x === 'string' && x.trim().length > 0
       ),
       updatedAtIso: this.store.snapshot.updatedAtIso
-    };
+    } as Resume;
+    
+    // Preserve ID if editing existing resume
+    if ((this.store.snapshot as any).id) {
+      (resume as any).id = (this.store.snapshot as any).id;
+    }
+    
+    return resume;
   }
 
   private createEducationGroup(item?: Partial<EducationItem>) {

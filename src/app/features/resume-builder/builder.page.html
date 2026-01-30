@@ -66,35 +66,41 @@
               <div class="two-cols">
                 <mat-form-field appearance="outline">
                   <mat-label>Email</mat-label>
-                  <input matInput formControlName="email" />
+                  <mat-icon matPrefix>email</mat-icon>
+                  <input matInput formControlName="email" type="email" />
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                   <mat-label>Téléphone</mat-label>
-                  <input matInput formControlName="phone" />
+                  <mat-icon matPrefix>phone</mat-icon>
+                  <input matInput formControlName="phone" type="tel" />
                 </mat-form-field>
               </div>
 
               <mat-form-field appearance="outline">
                 <mat-label>Localisation</mat-label>
+                <mat-icon matPrefix>location_on</mat-icon>
                 <input matInput formControlName="location" placeholder="Ville, pays" />
               </mat-form-field>
 
               <div class="two-cols">
                 <mat-form-field appearance="outline">
                   <mat-label>Site web</mat-label>
-                  <input matInput formControlName="website" />
+                  <mat-icon matPrefix>language</mat-icon>
+                  <input matInput formControlName="website" type="url" />
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                   <mat-label>LinkedIn</mat-label>
-                  <input matInput formControlName="linkedIn" />
+                  <mat-icon matPrefix>business</mat-icon>
+                  <input matInput formControlName="linkedIn" type="url" />
                 </mat-form-field>
               </div>
 
               <mat-form-field appearance="outline">
                 <mat-label>GitHub</mat-label>
-                <input matInput formControlName="github" />
+                <mat-icon matPrefix>code</mat-icon>
+                <input matInput formControlName="github" type="url" />
               </mat-form-field>
 
               <mat-form-field appearance="outline">
@@ -352,12 +358,22 @@
 
   <div class="preview">
     <div class="preview-actions no-print">
+      <div class="template-selector">
+        <mat-form-field appearance="outline" class="template-select">
+          <mat-label>Template</mat-label>
+          <mat-select [value]="currentTemplateId()" (selectionChange)="switchTemplate($event.value)">
+            @for (template of availableTemplates; track template.id) {
+              <mat-option [value]="template.id">{{ template.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <span class="spacer"></span>
       <button mat-stroked-button type="button" (click)="saveNow()">Sauvegarder</button>
       <button mat-flat-button color="primary" type="button" (click)="downloadPdf()">
         Télécharger PDF
       </button>
       <button mat-stroked-button type="button" (click)="print()">Imprimer</button>
-      <span class="spacer"></span>
       <button mat-button color="warn" type="button" (click)="resetAll()">Réinitialiser</button>
     </div>
 
