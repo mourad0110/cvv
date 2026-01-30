@@ -131,7 +131,11 @@
 }
 
 .main {
+  width: 100%;
+  min-width: 0;
   padding-left: 4px;
+  display: flex;
+  flex-direction: column;
 }
 
 .block {
@@ -157,6 +161,9 @@
     font-size: 12px;
     line-height: 1.65;
     color: rgba(15, 23, 42, 0.9);
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
   }
 
   ul {
@@ -243,6 +250,9 @@ li {
 .desc {
   margin-top: 8px !important;
   padding-left: 4px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .muted {

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -15,6 +14,7 @@ interface ResumeListItem {
   firstName: string;
   lastName: string;
   email?: string;
+  photoDataUrl?: string;
   updatedAt: string;
 }
 
@@ -26,7 +26,6 @@ interface ResumeListItem {
     RouterLink,
     MatCardModule,
     MatButtonModule,
-    MatIconModule,
     MatTableModule,
     MatSnackBarModule,
     MatDialogModule
@@ -63,6 +62,7 @@ export class CvListPage implements OnInit {
             firstName: r.personal?.firstName || '',
             lastName: r.personal?.lastName || '',
             email: r.personal?.email,
+            photoDataUrl: r.personal?.photoDataUrl,
             updatedAt: r.updatedAtIso || new Date().toISOString()
           };
           console.log('Mapped resume item:', mapped);

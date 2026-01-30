@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 import { TemplateRegistryService } from '../../core/services/template-registry.service';
 import { TemplateAtlasComponent } from '../resume-builder/templates/template-atlas.component';
 import { TemplateNovaComponent } from '../resume-builder/templates/template-nova.component';
@@ -17,7 +16,6 @@ import { Resume, ResumeTemplateId } from '../../core/models/resume.model';
     RouterLink,
     MatCardModule,
     MatButtonModule,
-    MatIconModule,
     TemplateAtlasComponent,
     TemplateNovaComponent
   ],

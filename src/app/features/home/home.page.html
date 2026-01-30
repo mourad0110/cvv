@@ -10,10 +10,7 @@
   @for (t of templates; track t.id) {
     <mat-card class="template-card">
       <mat-card-header>
-        <mat-card-title>
-          <mat-icon>description</mat-icon>
-          {{ t.name }}
-        </mat-card-title>
+        <mat-card-title>{{ t.name }}</mat-card-title>
         <mat-card-subtitle>{{ t.description }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
@@ -32,7 +29,6 @@
       </mat-card-content>
       <mat-card-actions align="end">
         <a mat-flat-button color="primary" [routerLink]="['/builder', t.id]">
-          <mat-icon>arrow_forward</mat-icon>
           Utiliser ce modèle
         </a>
       </mat-card-actions>

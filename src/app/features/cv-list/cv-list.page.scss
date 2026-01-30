@@ -75,6 +75,15 @@
   }
 }
 
+@keyframes refresh-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .header-actions {
   display: flex;
   align-items: center;
@@ -82,14 +91,15 @@
   flex-shrink: 0;
 
   .refresh-btn {
-    transition: transform 0.3s ease;
+    transition: transform 0.25s ease, opacity 0.2s ease;
 
-    &:hover:not(:disabled) {
-      transform: rotate(90deg);
+    &:hover:not(:disabled):not(.refresh-spinning) {
+      transform: scale(1.05);
     }
 
-    mat-icon.spinning {
-      animation: spin 1s linear infinite;
+    &.refresh-spinning {
+      animation: refresh-spin 0.8s linear infinite;
+      cursor: wait;
     }
   }
 
@@ -111,21 +121,6 @@
       box-shadow: 0 8px 20px rgba(14, 165, 233, 0.45);
       background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
     }
-
-    mat-icon {
-      font-size: 22px;
-      width: 22px;
-      height: 22px;
-    }
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
   }
 }
 
@@ -135,15 +130,6 @@
   padding: 100px 20px;
   max-width: 600px;
   margin: 0 auto;
-
-  mat-icon {
-    font-size: 80px;
-    width: 80px;
-    height: 80px;
-    color: var(--color-text-muted);
-    margin-bottom: 24px;
-    opacity: 0.6;
-  }
 
   h2 {
     margin: 16px 0 12px;
@@ -250,6 +236,32 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   }
 
+  .cv-card-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    span {
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.02em;
+    }
+  }
+
   ::ng-deep mat-card-title {
     font-size: 1.5rem;
     font-weight: 700;
@@ -298,30 +310,6 @@
       font-weight: 500;
       transition: all 0.2s ease;
 
-      mat-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
-        font-family: 'Material Icons' !important;
-        overflow: hidden;
-        text-indent: -9999px;
-        position: relative;
-        
-        &::after {
-          content: attr(data-icon);
-          text-indent: 0;
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-family: 'Material Icons';
-        }
-      }
-
       &:hover {
         transform: translateY(-1px);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -339,16 +327,15 @@
   font-size: 0.9rem;
   line-height: 1.5;
 
-  &:last-child {
-    margin-bottom: 0;
+  .bi {
+    font-size: 1.1rem;
+    color: #0ea5e9;
+    opacity: 0.9;
+    flex-shrink: 0;
   }
 
-  mat-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-    color: #0ea5e9;
-    opacity: 0.8;
+  &:last-child {
+    margin-bottom: 0;
   }
 
   span {

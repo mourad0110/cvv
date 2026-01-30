@@ -79,13 +79,6 @@
     gap: 8px;
     font-weight: 700;
     font-size: 1.25rem;
-
-    mat-icon {
-      color: var(--color-primary);
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
-    }
   }
 
   ::ng-deep mat-card-subtitle {
@@ -101,15 +94,6 @@
   ::ng-deep mat-card-actions {
     padding: 0 24px 24px;
     gap: 8px;
-
-    a {
-      mat-icon {
-        margin-left: 4px;
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
-      }
-    }
   }
 }
 
