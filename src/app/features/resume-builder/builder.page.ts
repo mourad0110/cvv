@@ -29,7 +29,8 @@ import {
   LanguageItem,
   Resume,
   ResumeTemplateId,
-  SkillItem
+  SkillItem,
+  StageItem
 } from '../../core/models/resume.model';
 import { ResumeStoreService } from '../../core/services/resume-store.service';
 import { TemplateRegistryService, ResumeTemplateMeta } from '../../core/services/template-registry.service';
@@ -101,6 +102,9 @@ export class BuilderPage implements OnDestroy {
     experienceStep: this.fb.group({
       items: this.fb.array([])
     }),
+    stageStep: this.fb.group({
+      items: this.fb.array([])
+    }),
     skillsStep: this.fb.group({
       items: this.fb.array([])
     }),
@@ -123,6 +127,13 @@ export class BuilderPage implements OnDestroy {
       (resume as any).id = state.resumeId;
       this.store.setResume(resume);
       this.hydrateFromResume(resume);
+    } else {
+      // Créer un nouveau CV : afficher un formulaire vide (pas les anciennes données)
+      const tid = this.templateId();
+      if (tid && this.templates.isValid(tid)) {
+        this.store.reset(tid as ResumeTemplateId);
+      }
+      this.hydrateFromResume(this.store.snapshot);
     }
 
     effect(() => {
@@ -138,11 +149,6 @@ export class BuilderPage implements OnDestroy {
         this.store.setTemplate(templateId);
       }
     });
-
-    // init form from saved resume (if any) - only if not loading from state
-    if (!state?.resumeId) {
-      this.hydrateFromResume(this.store.snapshot);
-    }
 
     // live preview + autosave
     this.form.valueChanges
@@ -163,6 +169,10 @@ export class BuilderPage implements OnDestroy {
 
   get experienceArray(): FormArray {
     return this.form.get('experienceStep.items') as FormArray;
+  }
+
+  get stageArray(): FormArray {
+    return this.form.get('stageStep.items') as FormArray;
   }
 
   get skillsArray(): FormArray {
@@ -191,6 +201,14 @@ export class BuilderPage implements OnDestroy {
 
   removeExperience(index: number): void {
     this.experienceArray.removeAt(index);
+  }
+
+  addStage(item?: Partial<StageItem>): void {
+    this.stageArray.push(this.createStageGroup(item));
+  }
+
+  removeStage(index: number): void {
+    this.stageArray.removeAt(index);
   }
 
   addSkill(item?: Partial<SkillItem>): void {
@@ -257,7 +275,11 @@ export class BuilderPage implements OnDestroy {
       },
       error: (error) => {
         console.error('Error saving:', error);
-        this.snackBar.open('Erreur lors de la sauvegarde.', 'OK', { duration: 3000 });
+        const msg =
+          error?.status === 0 || error?.status === undefined
+            ? 'Serveur inaccessible. Démarrez le backend (port 8080) puis réessayez.'
+            : `Erreur lors de la sauvegarde (${error?.status ?? '?'}).`;
+        this.snackBar.open(msg, 'OK', { duration: 5000 });
       }
     });
   }
@@ -323,6 +345,9 @@ export class BuilderPage implements OnDestroy {
     this.experienceArray.clear({ emitEvent: false });
     (resume.experience ?? []).forEach((e) => this.addExperience(e));
 
+    this.stageArray.clear({ emitEvent: false });
+    (resume.stages ?? []).forEach((s) => this.addStage(s));
+
     this.skillsArray.clear({ emitEvent: false });
     (resume.skills ?? []).forEach((s) => this.addSkill(s));
 
@@ -334,6 +359,7 @@ export class BuilderPage implements OnDestroy {
 
     if (this.educationArray.length === 0) this.addEducation();
     if (this.experienceArray.length === 0) this.addExperience();
+    if (this.stageArray.length === 0) this.addStage();
     if (this.skillsArray.length === 0) this.addSkill();
     if (this.languagesArray.length === 0) this.addLanguage();
 
@@ -360,6 +386,7 @@ export class BuilderPage implements OnDestroy {
       },
       education: (raw.educationStep?.items ?? []).filter(Boolean) as EducationItem[],
       experience: (raw.experienceStep?.items ?? []).filter(Boolean) as ExperienceItem[],
+      stages: (raw.stageStep?.items ?? []).filter(Boolean) as StageItem[],
       skills: (raw.skillsStep?.items ?? []).filter(Boolean) as SkillItem[],
       languages: (raw.languagesStep?.items ?? []).filter(Boolean) as LanguageItem[],
       interests: (raw.interestsStep?.items ?? []).filter(
@@ -395,6 +422,15 @@ export class BuilderPage implements OnDestroy {
       location: [item?.location ?? ''],
       startDate: [item?.startDate ?? ''],
       endDate: [item?.endDate ?? ''],
+      description: [item?.description ?? '']
+    });
+  }
+
+  private createStageGroup(item?: Partial<StageItem>) {
+    return this.fb.group({
+      intitule: [item?.intitule ?? '', [Validators.required]],
+      entreprise: [item?.entreprise ?? '', [Validators.required]],
+      duree: [item?.duree ?? ''],
       description: [item?.description ?? '']
     });
   }

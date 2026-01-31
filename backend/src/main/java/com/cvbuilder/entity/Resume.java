@@ -31,6 +31,9 @@ public class Resume {
     
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExperienceItem> experience = new ArrayList<>();
+
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StageItem> stages = new ArrayList<>();
     
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SkillItem> skills = new ArrayList<>();

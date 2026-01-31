@@ -19,15 +19,10 @@ public class ResumeService {
     private ResumeRepository resumeRepository;
     
     public ResumeDTO saveResume(ResumeDTO resumeDTO) {
-        Resume resume;
-        
-        if (resumeDTO.getId() != null) {
-            resume = resumeRepository.findById(resumeDTO.getId())
-                    .orElseThrow(() -> new RuntimeException("Resume not found"));
-        } else {
-            resume = new Resume();
-        }
-        
+        final Resume resume = resumeDTO.getId() != null
+                ? resumeRepository.findById(resumeDTO.getId()).orElseGet(Resume::new)
+                : new Resume();
+
         // Update resume fields
         resume.setTemplateId(resumeDTO.getTemplateId());
         resume.setPersonal(convertToPersonalInfo(resumeDTO.getPersonal()));
@@ -35,6 +30,7 @@ public class ResumeService {
         // Clear existing collections
         resume.getEducation().clear();
         resume.getExperience().clear();
+        resume.getStages().clear();
         resume.getSkills().clear();
         resume.getLanguages().clear();
         resume.getInterests().clear();
@@ -53,6 +49,14 @@ public class ResumeService {
                 ExperienceItem item = convertToExperienceItem(exp);
                 item.setResume(resume);
                 resume.getExperience().add(item);
+            });
+        }
+
+        if (resumeDTO.getStages() != null) {
+            resumeDTO.getStages().forEach(st -> {
+                StageItem item = convertToStageItem(st);
+                item.setResume(resume);
+                resume.getStages().add(item);
             });
         }
         
@@ -171,6 +175,9 @@ public class ResumeService {
         dto.setExperience(resume.getExperience().stream()
                 .map(this::convertToExperienceItemDTO)
                 .collect(Collectors.toList()));
+        dto.setStages(resume.getStages().stream()
+                .map(this::convertToStageItemDTO)
+                .collect(Collectors.toList()));
         dto.setSkills(resume.getSkills().stream()
                 .map(this::convertToSkillItemDTO)
                 .collect(Collectors.toList()));
@@ -224,6 +231,26 @@ public class ResumeService {
         if (item.getHighlights() != null) {
             dto.getHighlights().addAll(item.getHighlights());
         }
+        return dto;
+    }
+
+    private StageItem convertToStageItem(com.cvbuilder.dto.StageItemDTO dto) {
+        StageItem item = new StageItem();
+        item.setId(dto.getId());
+        item.setIntitule(dto.getIntitule());
+        item.setEntreprise(dto.getEntreprise());
+        item.setDuree(dto.getDuree());
+        item.setDescription(dto.getDescription());
+        return item;
+    }
+
+    private com.cvbuilder.dto.StageItemDTO convertToStageItemDTO(StageItem item) {
+        com.cvbuilder.dto.StageItemDTO dto = new com.cvbuilder.dto.StageItemDTO();
+        dto.setId(item.getId());
+        dto.setIntitule(item.getIntitule());
+        dto.setEntreprise(item.getEntreprise());
+        dto.setDuree(item.getDuree());
+        dto.setDescription(item.getDescription());
         return dto;
     }
     

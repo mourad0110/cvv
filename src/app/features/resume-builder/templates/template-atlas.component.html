@@ -142,6 +142,28 @@
         </section>
       }
 
+      @if (resume.stages?.length) {
+        <section class="block">
+          <h3>Stages</h3>
+          @for (s of resume.stages; track $index) {
+            <article class="entry">
+              <div class="entry-top">
+                <div class="entry-title">
+                  <strong>{{ s.intitule || 'Intitulé' }}</strong>
+                  <span class="muted">— {{ s.entreprise || 'Entreprise' }}</span>
+                </div>
+                @if (s.duree) {
+                  <div class="entry-dates">{{ s.duree }}</div>
+                }
+              </div>
+              @if (s.description) {
+                <p class="desc">{{ s.description }}</p>
+              }
+            </article>
+          }
+        </section>
+      }
+
       @if (resume.education.length) {
         <section class="block">
           <h3>Formation</h3>

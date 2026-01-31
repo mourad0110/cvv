@@ -17,6 +17,7 @@ public class ResumeDTO {
     private PersonalInfoDTO personal;
     private List<EducationItemDTO> education = new ArrayList<>();
     private List<ExperienceItemDTO> experience = new ArrayList<>();
+    private List<StageItemDTO> stages = new ArrayList<>();
     private List<SkillItemDTO> skills = new ArrayList<>();
     private List<LanguageItemDTO> languages = new ArrayList<>();
     private List<String> interests = new ArrayList<>();

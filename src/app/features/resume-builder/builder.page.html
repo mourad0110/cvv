@@ -224,6 +224,49 @@
             </div>
           </mat-step>
 
+          <mat-step [stepControl]="form.controls.stageStep" label="Stage">
+            <div class="step" [formGroup]="form.controls.stageStep">
+              <div formArrayName="items" class="items">
+                @for (g of stageArray.controls; track $index; let i = $index) {
+                  <mat-card class="item-card" [formGroupName]="i">
+                    <div class="item-header">
+                      <strong>Stage {{ i + 1 }}</strong>
+                      <button mat-button type="button" (click)="removeStage(i)">Supprimer</button>
+                    </div>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Intitulé</mat-label>
+                      <input matInput formControlName="intitule" placeholder="Ex: Développeur web" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Entreprise</mat-label>
+                      <input matInput formControlName="entreprise" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Durée</mat-label>
+                      <input matInput formControlName="duree" placeholder="Ex: 3 mois, 6 mois" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Description</mat-label>
+                      <textarea matInput rows="3" formControlName="description"></textarea>
+                    </mat-form-field>
+                  </mat-card>
+                }
+              </div>
+
+              <button mat-stroked-button type="button" (click)="addStage()">Ajouter un stage</button>
+
+              <div class="step-actions">
+                <button mat-button matStepperPrevious>Retour</button>
+                <span class="spacer"></span>
+                <button mat-flat-button color="primary" matStepperNext>Suivant</button>
+              </div>
+            </div>
+          </mat-step>
+
           <mat-step [stepControl]="form.controls.skillsStep" label="Compétences">
             <div class="step" [formGroup]="form.controls.skillsStep">
               <div formArrayName="items" class="items">

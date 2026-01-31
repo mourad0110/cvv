@@ -38,6 +38,14 @@ export interface ExperienceItem {
   highlights?: string[];
 }
 
+/** Stage (internship): Intitulé, Entreprise, Durée, Description */
+export interface StageItem {
+  intitule: string;
+  entreprise: string;
+  duree?: string;
+  description?: string;
+}
+
 export interface SkillItem {
   name: string;
   level?: 'Débutant' | 'Intermédiaire' | 'Avancé' | 'Expert';
@@ -53,6 +61,7 @@ export interface Resume {
   personal: PersonalInfo;
   education: EducationItem[];
   experience: ExperienceItem[];
+  stages: StageItem[];
   skills: SkillItem[];
   languages: LanguageItem[];
   interests: string[];
@@ -76,6 +85,7 @@ export const EMPTY_RESUME: Resume = {
   },
   education: [],
   experience: [],
+  stages: [],
   skills: [],
   languages: [],
   interests: [],

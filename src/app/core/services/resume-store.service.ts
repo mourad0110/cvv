@@ -70,6 +70,7 @@ export class ResumeStoreService {
         personal: { ...EMPTY_RESUME.personal, ...(parsed.personal ?? {}) },
         education: Array.isArray(parsed.education) ? parsed.education : [],
         experience: Array.isArray(parsed.experience) ? parsed.experience : [],
+        stages: Array.isArray(parsed.stages) ? parsed.stages : [],
         skills: Array.isArray(parsed.skills) ? parsed.skills : [],
         languages: Array.isArray(parsed.languages) ? parsed.languages : [],
         interests: Array.isArray(parsed.interests) ? parsed.interests : []

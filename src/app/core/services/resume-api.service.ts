@@ -97,6 +97,13 @@ export class ResumeApiService {
         description: e.description,
         highlights: e.highlights || []
       })),
+      stages: (resume.stages ?? []).map(s => ({
+        id: (s as any).id || null,
+        intitule: s.intitule,
+        entreprise: s.entreprise,
+        duree: s.duree,
+        description: s.description
+      })),
       skills: resume.skills.map(s => ({
         id: (s as any).id || null,
         name: s.name,
@@ -133,6 +140,7 @@ export class ResumeApiService {
       personal: backendResume.personal || {},
       education: backendResume.education || [],
       experience: backendResume.experience || [],
+      stages: backendResume.stages || [],
       skills: backendResume.skills || [],
       languages: backendResume.languages || [],
       interests: backendResume.interests || [],
